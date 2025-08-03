@@ -1,0 +1,10 @@
+# dependencies
+/node_modules
+
+# production
+/dist
+
+# misc
+.env
+*.log
+.DS_Store
