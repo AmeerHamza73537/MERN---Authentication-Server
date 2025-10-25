@@ -5,7 +5,6 @@ import { AppContent } from '../context/AppContext'
 import { useContext } from 'react'
 import axios from 'axios'
 import { toast } from 'react-toastify'
-import { set } from 'mongoose'
 
 const ResetPassword = () => {
 
