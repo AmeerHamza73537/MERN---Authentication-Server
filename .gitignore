@@ -1,10 +1,10 @@
-# dependencies
-/node_modules
+# # dependencies
+# /node_modules
 
-# production
-/dist
+# # production
+# /dist
 
-# misc
-.env
-*.log
-.DS_Store
+# # misc
+# .env
+# *.log
+# .DS_Store
