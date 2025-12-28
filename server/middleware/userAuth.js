@@ -6,13 +6,22 @@ import jwt from 'jsonwebtoken'
 
 const userAuth = async (req, res, next) => { // ✅ FIXED: Added 'next' parameter
     try {
-        // ✅ FIXED: Get token from cookies, not from request body
-        const { token } = req.cookies
-        
-        console.log('🔍 UserAuth middleware - Token:', token ? 'Present' : 'Missing');
+        // Get token from cookie, Authorization header (Bearer), or request body as fallback
+        const tokenFromCookie = req.cookies ? req.cookies.token : null
+        const authHeader = req.headers ? req.headers.authorization : null
+        const tokenFromHeader = authHeader && authHeader.startsWith('Bearer ') ? authHeader.split(' ')[1] : null
+        const tokenFromBody = req.body ? req.body.token : null
+
+        const token = tokenFromCookie || tokenFromHeader || tokenFromBody
+
+        console.log('🔍 UserAuth middleware - token sources:', {
+            cookie: tokenFromCookie ? 'present' : 'missing',
+            header: tokenFromHeader ? 'present' : 'missing',
+            body: tokenFromBody ? 'present' : 'missing'
+        })
 
         if (!token) {
-            return res.json({ success: false, message: 'Not Authorized. Login Again' })
+            return res.status(401).json({ success: false, message: 'Not Authorized. Login Again' })
         }
 
         // For decoding the token - JWT_SECRET is the secret key to verify and decode the token

@@ -35,9 +35,11 @@ export const register = async(req, res)=>{
         res.cookie('token', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict', // for deployment, if local then server and if live then none
+            // Use 'none' in production (with HTTPS) and 'lax' in development so browsers send cookies during XHR/fetch
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
             maxAge: 7 * 24 * 60 * 60 * 1000 // Expiry time for cookie
         })
+        console.log('🔐 AuthController - token cookie set (register) - sameSite:', process.env.NODE_ENV === 'production' ? 'none' : 'lax');
         // Sending Welcome Email
         // mailOptions -- this will create an email
         const mailOptions = {
@@ -81,9 +83,11 @@ export const login = async(req,res)=>{
         res.cookie('token', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict', // for deployment, if local then server and if live then none
+            // Use 'none' in production (with HTTPS) and 'lax' in development so browsers send cookies during XHR/fetch
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
             maxAge: 7 * 24 * 60 * 60 * 1000 // Expiry time for cookie
         })
+        console.log('🔐 AuthController - token cookie set (login) - sameSite:', process.env.NODE_ENV === 'production' ? 'none' : 'lax');
         return res.json({success:true})
 
     } catch (error) {
@@ -97,8 +101,9 @@ export const logout = async (req,res)=>{
         res.clearCookie('token', {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
         })
+        console.log('🔐 AuthController - token cookie cleared (logout) - sameSite:', process.env.NODE_ENV === 'production' ? 'none' : 'lax');
         return res.json({success: true, message: 'User Logout'})
     } catch (error) {
         return res.json({success: false, message: error.message})
