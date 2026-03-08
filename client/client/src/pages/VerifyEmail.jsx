@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 
 const VerifyEmail = () => {
   const navigate = useNavigate();
-  const { backendUrl, isLoggedIn, userData, getUserData } =
+  const { isLoggedIn, userData, getUserData, backendUrl } =
     useContext(AppContent);
 
   const inputRefs = useRef([]);

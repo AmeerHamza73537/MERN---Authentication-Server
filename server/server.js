@@ -10,12 +10,23 @@ const app = express()
 const port = process.env.PORT || 5000
 connectDB()
 
-const allowedOrigins = [
-    'http://localhost:5173',
-    'https://mern-auth-dev-weekends-1.netlify.app']
+// derive frontend/backend URLs from environment variables so we can deploy later
+// when deploying you'll set these to the real hostnames
+const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173'
+const backendUrl = process.env.BACKEND_URL || `http://localhost:${port}`
+
+// allow multiple origins (comma‑separated list) if provided in FRONTEND_URL
+const allowedOrigins = frontendUrl.split(',').map(u => u.trim())
+// always include the development Netlify preview for reference
+allowedOrigins.push('https://mern-auth-dev-weekends-1.netlify.app')
 
 app.use(express.json())
 app.use(cookieParser())
+// log incoming requests for debugging
+app.use((req, res, next) => {
+    console.log(`${req.method} ${req.originalUrl}`)
+    next()
+})
 app.use(cors({origin: allowedOrigins, credentials:true}))
 
 // API Endpoints

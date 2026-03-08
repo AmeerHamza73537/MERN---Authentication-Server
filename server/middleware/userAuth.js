@@ -29,6 +29,8 @@ const userAuth = async (req, res, next) => { // ✅ FIXED: Added 'next' paramete
         console.log('🔓 Token decoded, userId:', tokenDecode.id);
 
         if (tokenDecode.id) {
+            // Ensure req.body exists (for GET requests without body)
+            if (!req.body) req.body = {}
             // It will add the id in the request body with the property userId
             req.body.userId = tokenDecode.id
             // ✅ FIXED: Now next() is properly defined and called

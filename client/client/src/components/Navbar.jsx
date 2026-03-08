@@ -10,12 +10,23 @@ const Navbar = () => {
   const { userData, backendUrl, setUserData, setisLoggedIn } =
     useContext(AppContent);
 
+  const [dropdownOpen, setDropdownOpen] = React.useState(false);
+
+  // close dropdown when user clicks anywhere outside of it
+  React.useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (!e.target.closest('.navbar-avatar-container')) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, []);
+
   const sendVerificationOtp = async () => {
     try {
       axios.defaults.withCredentials = true;
-      const { data } = await axios.post(
-        backendUrl + "/api/auth/send-verify-otp"
-      );
+      const { data } = await axios.post(backendUrl + "/api/auth/send-verify-otp");
 
       if (data.success) {
         toast.success(data.message);
@@ -56,18 +67,27 @@ const Navbar = () => {
 
         {/* Right Section */}
         {userData ? (
-          <div className="relative group">
+          <div className="relative navbar-avatar-container">
             {/* Avatar */}
-            <div className="w-9 h-9 rounded-full bg-indigo-600 text-white flex items-center justify-center font-semibold cursor-pointer">
+            <div
+              className="w-9 h-9 rounded-full bg-indigo-600 text-white flex items-center justify-center font-semibold cursor-pointer"
+              onClick={() => setDropdownOpen((o) => !o)}
+            >
               {userData.name?.[0]?.toUpperCase()}
             </div>
 
             {/* Dropdown */}
-            <div className="absolute right-0 mt-2 w-44 bg-white rounded-xl shadow-lg border border-slate-200 opacity-0 group-hover:opacity-100 scale-95 group-hover:scale-100 transition-all duration-200 pointer-events-none group-hover:pointer-events-auto">
+            <div
+              className={`absolute right-0 mt-2 w-44 bg-white rounded-xl shadow-lg border border-slate-200 transition-all duration-200
+                ${dropdownOpen ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none'}`}
+            >
               <ul className="py-2 text-sm text-slate-700">
                 {!userData.isAccountVerified && (
                   <li
-                    onClick={sendVerificationOtp}
+                    onClick={() => {
+                      sendVerificationOtp();
+                      setDropdownOpen(false);
+                    }}
                     className="px-4 py-2 hover:bg-slate-100 cursor-pointer"
                   >
                     Verify Email
@@ -75,7 +95,10 @@ const Navbar = () => {
                 )}
 
                 <li
-                  onClick={logout}
+                  onClick={() => {
+                    logout();
+                    setDropdownOpen(false);
+                  }}
                   className="px-4 py-2 hover:bg-slate-100 cursor-pointer text-rose-600"
                 >
                   Logout

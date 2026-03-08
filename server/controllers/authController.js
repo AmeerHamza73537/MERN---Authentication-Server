@@ -32,14 +32,19 @@ export const register = async(req, res)=>{
         // Generated 1 token for id using jwt and 1 token for expiry using userModel
         const token = jwt.sign({id: user._id}, process.env.JWT_SECRET, {expiresIn: '7d'})
         
+        // cookies must be sent on cross‑site requests; browsers reject SameSite=None unless secure is true
+        // for local development we will run the React dev server with a proxy so the API is same‑origin
         res.cookie('token', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            // Use 'none' in production (with HTTPS) and 'lax' in development so browsers send cookies during XHR/fetch
+            // Chrome requires `secure:true` when `sameSite:'none'`.  During local HTTP
+            // development we switch to 'lax' so the browser will accept the cookie.
             sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
             maxAge: 7 * 24 * 60 * 60 * 1000 // Expiry time for cookie
         })
-        console.log('🔐 AuthController - token cookie set (register) - sameSite:', process.env.NODE_ENV === 'production' ? 'none' : 'lax');
+        console.log('🔐 AuthController - token cookie set (register) - sameSite',
+                    process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+                    'secure', process.env.NODE_ENV === 'production');
         // Sending Welcome Email
         // mailOptions -- this will create an email
         const mailOptions = {
@@ -83,11 +88,12 @@ export const login = async(req,res)=>{
         res.cookie('token', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            // Use 'none' in production (with HTTPS) and 'lax' in development so browsers send cookies during XHR/fetch
             sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
             maxAge: 7 * 24 * 60 * 60 * 1000 // Expiry time for cookie
         })
-        console.log('🔐 AuthController - token cookie set (login) - sameSite:', process.env.NODE_ENV === 'production' ? 'none' : 'lax');
+        console.log('🔐 AuthController - token cookie set (login) - sameSite',
+                    process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+                    'secure', process.env.NODE_ENV === 'production');
         return res.json({success:true})
 
     } catch (error) {
