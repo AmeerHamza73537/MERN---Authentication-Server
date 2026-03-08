@@ -14,7 +14,7 @@ export const AppContentProvider = (props)=>{
     // derive backend URL from environment, fall back to hard‑coded dev address
     // this avoids relying on the Vite proxy (which must be restarted whenever config changes)
     const backendUrl = import.meta.env.VITE_BACKEND_URL
-    const frontendUrl = import.meta.env.VITE_FRONTEND_URL || window.location.origin
+    // const frontendUrl = import.meta.env.VITE_FRONTEND_URL || window.location.origin
 
     // make all axios requests target the backend by default; components can still
     // override with "backendUrl + '/path'" if necessary
@@ -56,7 +56,7 @@ export const AppContentProvider = (props)=>{
 
     const value = {
         backendUrl,
-        frontendUrl,
+        // frontendUrl,
         isLoggedIn, setisLoggedIn,
         userData, setUserData,
         getUserData,
