@@ -12,8 +12,8 @@ connectDB()
 
 // derive frontend/backend URLs from environment variables so we can deploy later
 // when deploying you'll set these to the real hostnames
-const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173'
-const backendUrl = process.env.BACKEND_URL || `http://localhost:${port}`
+const frontendUrl = process.env.FRONTEND_URL 
+const backendUrl = process.env.BACKEND_URL 
 
 // allow multiple origins (comma‑separated list) if provided in FRONTEND_URL
 const allowedOrigins = frontendUrl.split(',').map(u => u.trim())
